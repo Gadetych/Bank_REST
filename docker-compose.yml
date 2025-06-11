@@ -1,9 +1,42 @@
-# 
-# docker-compose.yml — определяет сервисы для разработки и тестирования.
+services:
+  db:
+    image: mysql:8.0.37
+    container_name: db
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: bankcards
+      MYSQL_USER: dbuser
+      MYSQL_PASSWORD: password
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 5s
+      interval: 5s
+      retries: 10
+    networks:
+      - app-net
 
-Что нужно сделать:
-  - Настроить сервисы для:
-      - PostgreSQL (или MySQL) с начальной базой.
-      - Приложения Spring Boot (если нужно).
-  - Открыть нужные порты (например, 5432, 8080).
-  - Настроить volume для хранения данных БД.
+  app:
+    build: .
+    container_name: app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/bankcards
+      SPRING_DATASOURCE_USERNAME: dbuser
+      SPRING_DATASOURCE_PASSWORD: password
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-net
+
+volumes:
+  mysql-data:
+
+networks:
+  app-net:
