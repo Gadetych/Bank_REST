@@ -17,9 +17,14 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.MySQL8Dialect
   liquibase:
-    enabled: false
+    enabled: true
+
+security:
+  jwt:
+    secret_key: dGhpcy1pcy1hLXNlY3JldC1rZXktZm9yLWp3dC0yMDI0
+    access_token_expiration: 36000000 # 10 hours
+    refresh_token_expiration: 252000000 # 7 days
 
 logging:
   level:
