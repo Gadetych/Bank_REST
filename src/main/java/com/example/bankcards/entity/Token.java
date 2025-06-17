@@ -21,6 +21,8 @@ public class Token {
     private String accessToken;
     @Column(name = "refresh_token", unique = true)
     private String refreshToken;
+    @Column(name = "is_logged_out", columnDefinition = "TINYINT(1)")
+    private boolean loggedOut;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
