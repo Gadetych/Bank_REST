@@ -35,7 +35,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void register(RegistrationRequestDto request) {
-        User user = Mapper.registrationRequestDtoToUser(request);
+        User user = Mapper.registrationRequestDtoToUser(request, passwordEncoder);
         userRepository.save(user);
     }
 
