@@ -80,7 +80,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public String extractUserName(String token) {
+    public String extractUsername(String token) {
         log.debug("==> Extracting username from token");
         String username = extractClaim(token, Claims::getSubject);
         log.debug("<== Extracted username: {} from token", username);
@@ -115,7 +115,7 @@ public class JwtServiceImpl implements JwtService {
                 .map(Token::isLoggedOut)
                 .orElse(true);
 
-        boolean isValid = userDetails.getUsername().equals(extractUserName(token))
+        boolean isValid = userDetails.getUsername().equals(extractUsername(token))
                 && isAccessTokenExpired(token)
                 && !isLoggedOut;
 
@@ -131,7 +131,7 @@ public class JwtServiceImpl implements JwtService {
                 .map(t -> !t.isLoggedOut())
                 .orElse(false);
 
-        boolean isValid = userDetails.getUsername().equals(extractUserName(token))
+        boolean isValid = userDetails.getUsername().equals(extractUsername(token))
                 && isAccessTokenExpired(token)
                 && isValidRefreshToken;
 
