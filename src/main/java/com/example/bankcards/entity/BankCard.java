@@ -31,6 +31,7 @@ public class BankCard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "card_number", unique = true, nullable = false)
+//TODO добавить шифрование карты через AttributeConverter
     private String cardNumber;
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
@@ -41,5 +42,6 @@ public class BankCard {
     @Enumerated(value = EnumType.STRING)
     private CardStatus cardStatus;
     @Column(name = "balance", nullable = false)
-    private BigDecimal balance;
+    @Builder.Default
+    private BigDecimal balance = BigDecimal.valueOf(0.00);
 }
