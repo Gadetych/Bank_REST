@@ -1,8 +1,8 @@
 package com.example.bankcards.service;
 
 import com.example.bankcards.dto.AuthenticationResponseDto;
-import com.example.bankcards.dto.LoginRequestDto;
-import com.example.bankcards.dto.RegistrationRequestDto;
+import com.example.bankcards.dto.user.LoginRequestDto;
+import com.example.bankcards.dto.user.RegistrationRequestDto;
 import com.example.bankcards.entity.Token;
 import com.example.bankcards.entity.User;
 import com.example.bankcards.mapper.Mapper;

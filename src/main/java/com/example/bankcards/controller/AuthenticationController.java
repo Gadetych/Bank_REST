@@ -1,8 +1,8 @@
 package com.example.bankcards.controller;
 
 import com.example.bankcards.dto.AuthenticationResponseDto;
-import com.example.bankcards.dto.LoginRequestDto;
-import com.example.bankcards.dto.RegistrationRequestDto;
+import com.example.bankcards.dto.user.LoginRequestDto;
+import com.example.bankcards.dto.user.RegistrationRequestDto;
 import com.example.bankcards.service.AuthenticationService;
 import com.example.bankcards.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,6 +22,7 @@ public class AuthenticationController {
 
     @PostMapping("/registration")
     public ResponseEntity<String> register(@RequestBody RegistrationRequestDto registrationDto) {
+//        TODO перенести в общий обработчик исключений
         if(userService.existsByUsername(registrationDto.getUsername())) {
             return ResponseEntity.badRequest().body("Имя пользователя уже занято");
         }

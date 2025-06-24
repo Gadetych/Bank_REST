@@ -1,12 +1,17 @@
 package com.example.bankcards.service;
 
+import com.example.bankcards.dto.user.UserResponse;
 import com.example.bankcards.entity.User;
+import com.example.bankcards.mapper.Mapper;
 import com.example.bankcards.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -41,5 +46,36 @@ public class UserServiceImpl implements UserService {
         boolean exists = userRepository.existsByEmail(email);
         log.debug("<== User existence by email [{}]: {}", email, exists);
         return exists;
+    }
+
+    // Admin
+    @Override
+    public List<UserResponse> findAllUsers(List<Long> ids, Integer from, Integer size) {
+        List<User> users;
+        if (ids == null || ids.isEmpty()) {
+            users = userRepository.findAllLimit(from, size);
+        } else {
+            users = userRepository.findAllById(ids);
+        }
+        return users.stream()
+                .map(Mapper::userToUserResponse)
+                .toList();
+    }
+
+    @Override
+    public UserResponse getUserById(Long userId) {
+        log.debug("==> Getting user by id = {}", userId);
+        User user = userRepository.getReferenceById(userId);
+        UserResponse userResponse = Mapper.userToUserResponse(user);
+        log.debug("<== User = {}", userResponse);
+        return userResponse;
+    }
+
+    @Transactional
+    @Override
+    public void deleteUser(long userId) {
+        log.debug("==> Deleting user: {}", userId);
+        userRepository.deleteById(userId);
+        log.debug("<== Deleted user: {}", userId);
     }
 }
