@@ -1,7 +1,9 @@
 package com.example.bankcards.entity;
 
 import com.example.bankcards.entity.enums.CardStatus;
+import com.example.bankcards.util.CardNumberConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -32,7 +34,7 @@ public class BankCard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "card_number", unique = true, nullable = false)
-//TODO добавить шифрование карты через AttributeConverter
+    @Convert(converter = CardNumberConverter.class)
     private String cardNumber;
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)

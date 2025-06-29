@@ -6,11 +6,11 @@ import com.example.bankcards.dto.user.RegistrationRequestDto;
 import com.example.bankcards.dto.user.UserResponse;
 import com.example.bankcards.entity.Token;
 import com.example.bankcards.entity.User;
-import com.example.bankcards.util.mapper.Mapper;
 import com.example.bankcards.repository.TokenRepository;
 import com.example.bankcards.repository.UserRepository;
 import com.example.bankcards.security.JwtFilter;
 import com.example.bankcards.security.JwtService;
+import com.example.bankcards.util.mapper.Mapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -37,12 +37,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     @Override
-    public UserResponse register(RegistrationRequestDto request) throws UsernameNotFoundException{
+    public UserResponse register(RegistrationRequestDto request) {
         if (userService.existsByUsername(request.getUsername())) {
             throw new UsernameNotFoundException("Имя пользователя уже занято");
         }
         if (userService.existsByEmail(request.getEmail())) {
-            throw  new UsernameNotFoundException("Email уже занят");
+            throw new UsernameNotFoundException("Email уже занят");
         }
         User user = Mapper.registrationRequestDtoToUser(request, passwordEncoder);
         user = userRepository.save(user);
