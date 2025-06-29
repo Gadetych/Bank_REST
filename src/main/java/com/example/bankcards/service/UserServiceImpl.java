@@ -2,7 +2,7 @@ package com.example.bankcards.service;
 
 import com.example.bankcards.dto.user.UserResponse;
 import com.example.bankcards.entity.User;
-import com.example.bankcards.mapper.Mapper;
+import com.example.bankcards.util.mapper.Mapper;
 import com.example.bankcards.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,7 +65,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse getUserById(Long userId) {
         log.debug("==> Getting user by id = {}", userId);
-        User user = userRepository.getReferenceById(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("Не найден пользователь с id = " + userId));
         UserResponse userResponse = Mapper.userToUserResponse(user);
         log.debug("<== User = {}", userResponse);
         return userResponse;

@@ -3,9 +3,10 @@ package com.example.bankcards.service;
 import com.example.bankcards.dto.AuthenticationResponseDto;
 import com.example.bankcards.dto.user.LoginRequestDto;
 import com.example.bankcards.dto.user.RegistrationRequestDto;
+import com.example.bankcards.dto.user.UserResponse;
 import com.example.bankcards.entity.Token;
 import com.example.bankcards.entity.User;
-import com.example.bankcards.mapper.Mapper;
+import com.example.bankcards.util.mapper.Mapper;
 import com.example.bankcards.repository.TokenRepository;
 import com.example.bankcards.repository.UserRepository;
 import com.example.bankcards.security.JwtFilter;
@@ -28,15 +29,24 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserRepository userRepository;
+
+    private final UserService userService;
     private final TokenRepository tokenRepository;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
     @Override
-    public void register(RegistrationRequestDto request) {
+    public UserResponse register(RegistrationRequestDto request) throws UsernameNotFoundException{
+        if (userService.existsByUsername(request.getUsername())) {
+            throw new UsernameNotFoundException("Имя пользователя уже занято");
+        }
+        if (userService.existsByEmail(request.getEmail())) {
+            throw  new UsernameNotFoundException("Email уже занят");
+        }
         User user = Mapper.registrationRequestDtoToUser(request, passwordEncoder);
-        userRepository.save(user);
+        user = userRepository.save(user);
+        return Mapper.userToUserResponse(user);
     }
 
     @Override
