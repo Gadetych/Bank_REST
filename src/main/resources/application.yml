@@ -26,6 +26,8 @@ security:
     secret_key: dGhpcy1pcy1hLXNlY3JldC1rZXktZm9yLWp3dC0yMDI0
     access_token_expiration: 36000000 # 10 hours
     refresh_token_expiration: 252000000 # 7 days
+schedule:
+  interval-in-cron: 0 5 0 * * *
 
 logging:
   level:

@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-admin-user
+      author: Vladislav Gadetov
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: username
+                  value: "admin"
+              - column:
+                  name: password
+                  value: "$2y$10$Bqqm16M0OTsIEXx8.o./n.ZEsbCEM.eB0osj8/psBbQY6TBpVdlMi" # Пароль: password
+#$2a$10$Eh7UXRG8xv7a6Tl9tvYzle1UQgbTO9RPPNg/B9VMuupQZZYwWbq/y
+              - column:
+                  name: email
+                  value: "admin@bank.com"
+              - column:
+                  name: role
+                  value: "ADMIN"

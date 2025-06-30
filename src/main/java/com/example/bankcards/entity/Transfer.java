@@ -14,25 +14,28 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "token_table")
-@Getter
-@Setter
+@Table(name = "transfers")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Token {
+@Getter
+@Setter
+public class Transfer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "access_token", unique = true)
-    private String accessToken;
-    @Column(name = "refresh_token", unique = true)
-    private String refreshToken;
-    @Column(name = "is_logged_out", columnDefinition = "TINYINT(1)")
-    private boolean loggedOut;
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "from_card", nullable = false)
+    private BankCard fromCard;
+    @ManyToOne
+    @JoinColumn(name = "to_card", nullable = false)
+    private BankCard toCard;
+    @Column(nullable = false)
+    private BigDecimal amount;
+    @Column(nullable = false)
+    private LocalDateTime timestamp;
 }
