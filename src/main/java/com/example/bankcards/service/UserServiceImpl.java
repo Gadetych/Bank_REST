@@ -1,11 +1,16 @@
 package com.example.bankcards.service;
 
+import com.example.bankcards.dto.card.BankCardResponse;
+import com.example.bankcards.dto.user.ParamSearchAdminUser;
 import com.example.bankcards.dto.user.UserResponse;
+import com.example.bankcards.entity.BankCard;
 import com.example.bankcards.entity.User;
 import com.example.bankcards.util.mapper.Mapper;
 import com.example.bankcards.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -50,16 +55,12 @@ public class UserServiceImpl implements UserService {
 
     // Admin
     @Override
-    public List<UserResponse> findAllUsers(List<Long> ids, Integer from, Integer size) {
-        List<User> users;
-        if (ids == null || ids.isEmpty()) {
-            users = userRepository.findAllLimit(from, size);
-        } else {
-            users = userRepository.findAllById(ids);
-        }
-        return users.stream()
-                .map(Mapper::userToUserResponse)
-                .toList();
+    public Page<UserResponse> findAllUsers(ParamSearchAdminUser paramSearch) {
+        log.debug("==> Getting all users with params: {}}", paramSearch);
+        Page<User> page = userRepository.findAll(PageRequest.of(paramSearch.getOffset(), paramSearch.getLimit()));
+        Page<UserResponse> response = page.map(Mapper::userToUserResponse);
+        log.debug("<== Mapped to response page");
+        return response;
     }
 
     @Override

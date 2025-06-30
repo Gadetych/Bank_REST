@@ -1,13 +1,17 @@
 package com.example.bankcards.controller.admin;
 
+import com.example.bankcards.dto.user.ParamSearchAdminUser;
 import com.example.bankcards.dto.user.RegistrationRequestDto;
 import com.example.bankcards.dto.user.UserResponse;
 import com.example.bankcards.service.AuthenticationService;
 import com.example.bankcards.service.UserService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -42,11 +46,11 @@ public class AdminUsersController {
     }
 
     @GetMapping
-    public List<UserResponse> findAllUsers(@RequestParam(required = false) List<Long> ids,
-                                           @RequestParam(required = false, defaultValue = "0") Integer from,
-                                           @RequestParam(required = false, defaultValue = "10") Integer size) {
-        log.info("==> findAllUsers ids={}, from={}, size={}", ids, from, size);
-        return userService.findAllUsers(ids, from, size);
+    public Page<UserResponse> findAllUsers(@RequestParam(defaultValue = "0", required = false) @PositiveOrZero Integer offset,
+                                           @RequestParam(defaultValue = "10", required = false) @PositiveOrZero @Max(100) Integer limit) {
+        log.info("==> findAllUsers from={}, size={}", offset, limit);
+        ParamSearchAdminUser paramSearch = new ParamSearchAdminUser(offset, limit);
+        return userService.findAllUsers(paramSearch);
     }
 
     @GetMapping("/{userId}")

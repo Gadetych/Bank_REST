@@ -93,7 +93,6 @@ public class CardServiceImpl implements CardService {
     public Page<BankCardResponse> getAllCards(ParamSearchAdminCard paramSearch) {
         log.debug("==> Getting all cards with params: {}}", paramSearch);
         Page<BankCard> page = cardRepository.findAll(PageRequest.of(paramSearch.getOffset(), paramSearch.getLimit()));
-//        page.stream().forEach(this::isExpiredCard);
         Page<BankCardResponse> response = page.map(Mapper::bankCardToBankCardResponse);
         log.debug("<== Mapped to response page");
         return response;
