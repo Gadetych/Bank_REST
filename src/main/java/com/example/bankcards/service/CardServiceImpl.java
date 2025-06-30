@@ -71,21 +71,31 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Page<BankCardResponse> getAllCards(ParamSearchAdminCard paramSearch) {
-        log.debug("==> Getting all cards with params: {}}", paramSearch);
-        Page<BankCard> page = cardRepository.findAll(PageRequest.of(paramSearch.getOffset(), paramSearch.getLimit()));
-
-        Page<BankCardResponse> response = page.map(Mapper::bankCardToBankCardResponse);
-        log.debug("<== Mapped to response page");
-        return response;
-    }
-
-    @Override
     public BankCardResponse findCardById(Long cardId) {
         log.debug("==> Getting card by id: {}}", cardId);
         BankCard bankCard = cardRepository.findById(cardId).orElseThrow(() -> new CardNotFoundException("Не найдена карта с id = " + cardId));
+        isExpiredCard(bankCard);
         BankCardResponse response = Mapper.bankCardToBankCardResponse(bankCard);
         log.debug("<== Mapped card response: {}", response);
+        return response;
+    }
+
+    private boolean isExpiredCard(BankCard card) {
+        if (card.getExpirationDate().isBefore(LocalDate.now())) {
+            card.setCardStatus(CardStatus.EXPIRED);
+            cardRepository.save(card);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Page<BankCardResponse> getAllCards(ParamSearchAdminCard paramSearch) {
+        log.debug("==> Getting all cards with params: {}}", paramSearch);
+        Page<BankCard> page = cardRepository.findAll(PageRequest.of(paramSearch.getOffset(), paramSearch.getLimit()));
+//        page.stream().forEach(this::isExpiredCard);
+        Page<BankCardResponse> response = page.map(Mapper::bankCardToBankCardResponse);
+        log.debug("<== Mapped to response page");
         return response;
     }
 }
