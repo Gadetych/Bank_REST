@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ParamSearchAdminUser {
-    Integer offset;
-    Integer limit;
+    private Integer offset;
+    private Integer limit;
 }

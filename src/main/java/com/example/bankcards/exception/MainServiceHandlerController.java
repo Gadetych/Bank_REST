@@ -1,6 +1,7 @@
 package com.example.bankcards.exception;
 
 import com.example.bankcards.dto.ApiError;
+import com.example.bankcards.exception.forbidden.ForbiddenException;
 import com.example.bankcards.exception.not_found.NotFoundException;
 import com.example.bankcards.exception.validation.BadRequestException;
 import jakarta.validation.ConstraintViolationException;
@@ -25,23 +26,10 @@ public class MainServiceHandlerController {
     private final StringWriter sw = new StringWriter();
     private final PrintWriter pw = new PrintWriter(sw);
 
-    @ExceptionHandler({DataAccessException.class, NotFoundException.class})
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiError handleNotFound(RuntimeException e) {
-        log.info("404 {}", e.getMessage(), e);
-        e.printStackTrace(pw);
-        ApiError apiError = new ApiError();
-        apiError.setMessage(e.getMessage());
-        apiError.setStatus(HttpStatus.NOT_FOUND.toString());
-        apiError.setReason("The required object was not found.");
-        apiError.setTimestamp(LocalDateTime.now());
-        return apiError;
-    }
-
-    @ExceptionHandler({ConstraintViolationException.class, MethodArgumentNotValidException.class, DataIntegrityViolationException.class,
-            MissingServletRequestParameterException.class, BadRequestException.class})
+    @ExceptionHandler({ConstraintViolationException.class, DataIntegrityViolationException.class,
+            MissingServletRequestParameterException.class, BadRequestException.class, IllegalArgumentException.class, MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleBadRequest(RuntimeException e) {
+    public ApiError handleBadRequest(Exception e) {
         log.info("400 {}", e.getMessage(), e);
         e.printStackTrace(pw);
         ApiError apiError = new ApiError();
@@ -65,7 +53,34 @@ public class MainServiceHandlerController {
         return apiError;
     }
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler({ForbiddenException.class})
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ApiError handleForbiddenRequest(RuntimeException e) {
+        log.info("403 {}", e.getMessage(), e);
+        e.printStackTrace(pw);
+        ApiError apiError = new ApiError();
+        apiError.setMessage(e.getMessage());
+        apiError.setStatus(HttpStatus.FORBIDDEN.toString());
+        apiError.setReason("Not access.");
+        apiError.setTimestamp(LocalDateTime.now());
+        return apiError;
+    }
+
+    @ExceptionHandler({DataAccessException.class, NotFoundException.class})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiError handleNotFound(RuntimeException e) {
+        log.info("404 {}", e.getMessage(), e);
+        e.printStackTrace(pw);
+        ApiError apiError = new ApiError();
+        apiError.setMessage(e.getMessage());
+        apiError.setStatus(HttpStatus.NOT_FOUND.toString());
+        apiError.setReason("The required object was not found.");
+        apiError.setTimestamp(LocalDateTime.now());
+        return apiError;
+    }
+
+
+    @ExceptionHandler({Exception.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiError handleServerError(final Exception e) {
         log.info("500 {}", e.getMessage(), e);
