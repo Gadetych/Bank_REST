@@ -1,7 +1,7 @@
 package com.example.bankcards.controller.admin;
 
 import com.example.bankcards.dto.card.BankCardResponse;
-import com.example.bankcards.dto.card.ParamSearchAdminCard;
+import com.example.bankcards.dto.card.ParamSearchCard;
 import com.example.bankcards.entity.enums.CardStatus;
 import com.example.bankcards.service.CardService;
 import jakarta.validation.constraints.Max;
@@ -61,7 +61,7 @@ public class AdminCardController {
     public Page<BankCardResponse> getAllCards(
             @RequestParam(defaultValue = "0", required = false) @PositiveOrZero Integer offset,
             @RequestParam(defaultValue = "10", required = false) @PositiveOrZero @Max(100) Integer limit) {
-        ParamSearchAdminCard paramSearch = new ParamSearchAdminCard(offset, limit);
+        ParamSearchCard paramSearch = new ParamSearchCard(offset, limit);
         log.info("==> ADMIN: Requesting cards list with {}", paramSearch);
         Page<BankCardResponse> response = cardService.getAllCards(paramSearch);
         log.info("<== ADMIN: Successfully created card: {}", response);

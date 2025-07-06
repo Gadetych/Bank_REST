@@ -1,11 +1,13 @@
 package com.example.bankcards.util.mapper;
 
 import com.example.bankcards.dto.card.BankCardResponse;
+import com.example.bankcards.dto.transfer.TransferResponse;
 import com.example.bankcards.dto.user.RegistrationRequestDto;
 import com.example.bankcards.dto.user.UserResponse;
 import com.example.bankcards.entity.BankCard;
-import com.example.bankcards.entity.enums.Role;
+import com.example.bankcards.entity.Transfer;
 import com.example.bankcards.entity.User;
+import com.example.bankcards.entity.enums.Role;
 import lombok.experimental.UtilityClass;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -36,5 +38,12 @@ public class Mapper {
     private String maskCardNumber(String cardNumber) {
         String suffix = cardNumber.substring(cardNumber.length() - 4);
         return "**** **** **** " + suffix;
+    }
+
+    public TransferResponse transferToTransferResponse(Transfer entity) {
+        return new TransferResponse(entity.getId(),
+                entity.getFromCard().getId(),
+                entity.getToCard().getId(),
+                entity.getAmount());
     }
 }

@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ParamSearchAdminCard {
+public class ParamSearchCard {
     private Integer offset;
     private Integer limit;
 }
